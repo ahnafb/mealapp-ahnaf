@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mealapp by Ahnaf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha384-rKE2kVha/3AMm5HRW/EBIcOK/97S0Nw3AqU7viFHEJCVzCB2CYHT5cP2FJh4TyUQ"
+      crossorigin="anonymous"
+    />
+    <link
+      href="{{ url_for('static', filename='style.css') }}"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+      function listCategory() {
+        $.ajax({
+          type: "GET",
+          url: "https://www.themealdb.com/api/json/v1/1/categories.php",
+          success: function (response) {
+            let categories = response.categories;
+
+            for (let i = 0; i < categories.length; i++) {
+              let categoryName = categories[i].strCategory;
+              let imageUrl = categories[i].strCategoryThumb;
+
+              let temp_html = `
+              <div class="image-card">
+                <a href="/category-detail?category-name=${categoryName}">
+                  <img src="${imageUrl}" alt="${categoryName}" />
+                  <div class="card-text">
+                    <p>${categoryName}</p>
+                  </div>
+                </a>
+              </div>
+            `;
+
+              $(".container").append(temp_html);
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryName = urlParams.get("category-name");
+
+        if (categoryName) {
+          listMealsByCategory(categoryName);
+        } else {
+          listCategory();
+        }
+      });
+
+      function toggleMenu() {
+        $(".nav-links").toggleClass("show");
+      }
+    </script>
+  </head>
+  <nav class="navbar">
+    <a href="/" class="logo"> <i class="fas fa-home"></i> mealapp </a>
+    <div class="menu-icon" onclick="toggleMenu()">
+      <i class="fas fa-bars">tes</i>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Foods</a></li>
+      <li><a href="#">Ingredients</a></li>
+      <li><a href="#">Local Culinary</a></li>
+    </ul>
+  </nav>
+  <body>
+    <div class="header">
+      <i class="fa-solid fa-mug-hot"></i>
+      <i class="fas fa-utensils"></i>
+      <p style="font-size: large">mealapp API website</p>
+      <h1>See All The Delicious Foods</h1>
+    </div>
+    <div class="container"></div>
+  </body>
+  <footer class="footer">
+    <p>&copy; 2024 Property of Ahnaf. All rights reserved.</p>
+  </footer>
+</html>
